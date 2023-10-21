@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stock Information</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"></script>
+</head>
+<body>
+    <h1>Stock Information</h1>
+    <input type="text" id="symbolInput" placeholder="Enter stock symbol (e.g., AAPL)">
+    <button onclick="getStockInfo()">Get Stock Info</button>
+    <div id="stockInfo"></div>
+
+    <script>
+        var socket = io.connect('http://127.0.0.1:5999');
+
+        function getStockInfo() {
+            var symbol = document.getElementById('symbolInput').value;
+            console.log("---------------------")
+            socket.emit('get_stock_info', { symbol: symbol });
+            console.log("=====================")
+
+        }
+        
+        socket.on('get_stock_info', function(data) {
+            
+            var stockInfoDiv = document.getElementById('stockInfo');
+            var stock = JSON.parse(data)
+            stockInfoDiv.innerHTML = '<p>Symbol: ' + stock.symbol + '</p>' +
+                                    '<p>Name: ' + stock.name + '</p>' +
+                                    '<p>Current Price: ' + stock.current_price + '</p>' +
+                                    '<p>Volume: ' + stock.volume + '</p>' +
+                                    '<p>Min Price: ' + stock.min_price + '</p>' +
+                                    '<p>Max Price: ' + stock.max_price + '</p>';
+
+        });
+    </script>
+</body>
+</html>
